@@ -1,3 +1,43 @@
 from django.db import models
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from .managers import CustomUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
-# Create your models here.
+
+class User(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(verbose_name=_("username"), max_length=255, unique=True)
+    name = models.CharField(verbose_name=_("name"), max_length=50)
+    email = models.EmailField(verbose_name=_("email"), unique=True)
+    following = models.ManyToManyField("self", symmetrical=False, related_name="followed", blank=True)
+    bio = models.TextField(verbose_name=_("bio"), blank=True, max_length=500)
+    avatar = models.ImageField(verbose_name=_("avatar"), default='user.png')
+    cover_image = models.ImageField(verbose_name=_("cover image"), default='cover.png')
+    is_staff = models.BooleanField(verbose_name=_("is_status"), default=False)
+    is_superuser = models.BooleanField(verbose_name=_("is_superuser"), default=False)
+    is_active = models.BooleanField(verbose_name=_("Active"), default=True)
+    date_joined = models.DateTimeField(default=timezone.now, verbose_name=_("Date Joined"))
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    objects = CustomUserManager()
+
+    class Meta:
+        ordering = ('date_joined',)
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
+
+    @property
+    def get_full_name(self):
+        return f"{self.name.title()}"
+
+    @property
+    def get_short_name(self):
+        return self.name.title()
+
+    def __str__(self):
+        return self.username
