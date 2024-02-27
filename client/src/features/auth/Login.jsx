@@ -2,9 +2,34 @@ import { useLoginMutation } from "../../app/api/authApi";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { PiCirclesThreePlus } from "react-icons/pi";
+import Spiner from "../../components/Spiner";
+import { useSelector } from "react-redux";
+import { loginErrorSelector } from "./authSlice";
+import { useEffect, useRef } from "react";
+
 const Login = () => {
+  const emailRef = useRef(null);
+  const errMsg = useSelector(loginErrorSelector);
   const navigate = useNavigate();
-  const [login] = useLoginMutation();
+  const [login, { isLoading, isSuccess }] = useLoginMutation();
+
+  useEffect(() => {
+    if (emailRef.current) {
+      emailRef.current.focus();
+    }
+  }, [emailRef]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/");
+    }
+  }, [isSuccess, navigate]);
+
+  if (isLoading) return <Spiner />;
+  const handleSubmit = async (values) => {
+    await login(values);
+  };
+
   return (
     <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="m-5 p-10 bg-grey-3">
@@ -14,6 +39,11 @@ const Login = () => {
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-700">
               Sign in to your account
             </h2>
+            {errMsg &&
+              errMsg.message !== undefined &&
+              errMsg.message !== "" && (
+                <div className="text-red-500 text-center">{errMsg.message}</div>
+              )}
           </div>
 
           <Formik
@@ -29,11 +59,7 @@ const Login = () => {
               }
               return errors;
             }}
-            onSubmit={(values) => {
-              login(values)
-                .then(() => navigate("/"))
-                .catch((error) => console.log(error));
-            }}
+            onSubmit={(values) => handleSubmit(values)}
           >
             {({ isSubmitting }) => (
               <Form>
@@ -42,6 +68,7 @@ const Login = () => {
                   name="email"
                   type="email"
                   placeholder="Email"
+                  innerRef={emailRef}
                 />
                 <ErrorMessage
                   name="email"
@@ -53,6 +80,7 @@ const Login = () => {
                   name="password"
                   type="password"
                   placeholder="Password"
+                  autoComplete="off"
                 />
                 <ErrorMessage
                   name="password"
@@ -69,8 +97,8 @@ const Login = () => {
               </Form>
             )}
           </Formik>
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
+          <div className="flex items-center justify-between ">
+            <div className="text-sm ">
               Don&apos;t have an account yet?
               <Link to="/signup">
                 <span className="hover:text-sky-500 ml-2 transition-colors ">
