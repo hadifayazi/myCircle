@@ -1,33 +1,28 @@
-import { useLoginMutation } from "../../app/api/authApi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Form, Formik, Field, ErrorMessage } from "formik";
 import { PiCirclesThreePlus } from "react-icons/pi";
 import Spiner from "../../components/Spiner";
 import { useSelector } from "react-redux";
 import { loginErrorSelector } from "./authSlice";
 import { useEffect, useRef } from "react";
+import { useSignupMutation } from "../../app/api/authApi";
 
-const Login = () => {
-  const emailRef = useRef(null);
+const Signup = () => {
+  const usernameRef = useRef(null);
+  //   const navigate = useNavigate();
   const errMsg = useSelector(loginErrorSelector);
-  const navigate = useNavigate();
-  const [login, { isLoading, isSuccess }] = useLoginMutation();
+  const [signup, { isLoading }] = useSignupMutation();
 
   useEffect(() => {
-    if (emailRef.current) {
-      emailRef.current.focus();
+    if (usernameRef.current) {
+      usernameRef.current.focus();
     }
-  }, [emailRef]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigate("/");
-    }
-  }, [isSuccess, navigate]);
+  }, [usernameRef]);
 
   if (isLoading) return <Spiner />;
+
   const handleSubmit = async (values) => {
-    await login(values);
+    await signup(values);
   };
 
   return (
@@ -37,7 +32,7 @@ const Login = () => {
           <div>
             <PiCirclesThreePlus className="mx-auto text-center text-4xl text-cust-btn" />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-700">
-              Sign in to your account
+              Create an account
             </h2>
             {errMsg &&
               errMsg.message !== undefined &&
@@ -64,11 +59,22 @@ const Login = () => {
             {({ isSubmitting }) => (
               <Form>
                 <Field
+                  className="border-b-[1px] border-neutral-800 w-full p-5 cursor-pointer my-3 bg-transparent outline-neutral-800  "
+                  name="username"
+                  type="text"
+                  placeholder="Username"
+                  innerRef={usernameRef}
+                />
+                <ErrorMessage
+                  name="username"
+                  component="div"
+                  className="text-red-500"
+                />
+                <Field
                   className="border-b-[1px] border-neutral-800 w-full p-5 cursor-pointer my-3 bg-transparent outline-neutral-800    "
                   name="email"
                   type="email"
                   placeholder="Email"
-                  innerRef={emailRef}
                 />
                 <ErrorMessage
                   name="email"
@@ -92,17 +98,17 @@ const Login = () => {
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  Login
+                  Sign up
                 </button>
               </Form>
             )}
           </Formik>
           <div className="flex items-center justify-between ">
             <div className="text-sm ">
-              Don&apos;t have an account yet?
+              You already have an account?
               <Link to="/signup">
                 <span className="hover:text-sky-500 ml-2 transition-colors ">
-                  Sign up here!
+                  Sign in here!
                 </span>
               </Link>
             </div>
@@ -113,4 +119,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
