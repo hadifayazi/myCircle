@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import make_password
-from .serializers import UserSerializer,  MyTokenObtainPairSerializer
+from .serializers import UserCreateSerializer,  MyTokenObtainPairSerializer, UserSerializer
 from .models import User
 
 
@@ -18,7 +18,7 @@ class UserRegistrationView(generics.CreateAPIView):
    """
 
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserCreateSerializer
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
@@ -26,4 +26,37 @@ class UserRegistrationView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.validated_data['password'] = make_password(serializer.validated_data['password'])
         user = serializer.save()
-        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED,)
+        return Response(UserCreateSerializer(user).data, status=status.HTTP_201_CREATED,)
+
+
+class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API endpoint for retrieving user details, updating and deleting it
+    """
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(UserSerializer(instance).data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.is_active = False
+        instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserDetailsView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'username'
