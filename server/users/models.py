@@ -9,7 +9,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(verbose_name=_("username"), max_length=255, unique=True)
     name = models.CharField(verbose_name=_("name"), max_length=50)
     email = models.EmailField(verbose_name=_("email"), unique=True)
-    following = models.ManyToManyField("self", symmetrical=False, related_name="followed", blank=True)
+    following = models.ManyToManyField("self", symmetrical=False, related_name="followers", blank=True)
     bio = models.TextField(verbose_name=_("bio"), blank=True, max_length=500)
     avatar = models.ImageField(verbose_name=_("avatar"), default='user.png')
     cover_image = models.ImageField(verbose_name=_("cover image"), default='cover.png')
@@ -30,6 +30,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         ordering = ('date_joined',)
         verbose_name = _("User")
         verbose_name_plural = _("Users")
+
+    def following_list(self):
+        return self.following.all()
+
+    def followers_list(self):
+        return self.followers.all()
+
+    def follow(self, user):
+        self.following.add(user)
+
+    def unfollow(self, user):
+        self.following.remove(user)
 
     @property
     def get_full_name(self):
