@@ -104,8 +104,20 @@ export const authApi = createApi({
     getProfile: builder.query({
       query: () => "user",
     }),
+    getUser: builder.query({
+      query: (username) => {
+        return {
+          url: `user/${username}`,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignupMutation, useGetProfileQuery } =
-  authApi;
+export const {
+  useLoginMutation,
+  useSignupMutation,
+  useGetProfileQuery,
+  useGetUserQuery,
+} = authApi;

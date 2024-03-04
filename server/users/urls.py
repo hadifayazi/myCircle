@@ -7,5 +7,5 @@ urlpatterns = [
     path('login', views.MyTokenObtainPairView.as_view(), name='login'),
     path('refresh', TokenRefreshView.as_view(), name='refresh'),
     path('user', views.UserProfileView.as_view(), name='user_profile'),
-    path('<str:username>', views.UserDetailsView.as_view(), name='user_details')
+    path('user/<str:username>', views.UserDetailsView.as_view(), name='user_details')
 ]
