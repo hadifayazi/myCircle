@@ -1,13 +1,22 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./features/auth/Login";
 import Signup from "./features/auth/Signup";
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 import Profile from "./features/user/Profile";
+import AuthRequiredRoutes from "./components/AuthRequiredRoutes";
+import Feeds from "./features/user/Feeds";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <AuthRequiredRoutes />,
+    children: [
+      { path: "feeds", element: <Feeds /> },
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+    ],
   },
   {
     path: "login",
@@ -16,10 +25,6 @@ const router = createBrowserRouter([
   {
     path: "signup",
     element: <Signup />,
-  },
-  {
-    path: "profile",
-    element: <Profile />,
   },
 ]);
 
