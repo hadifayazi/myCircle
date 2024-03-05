@@ -23,6 +23,7 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[])
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition

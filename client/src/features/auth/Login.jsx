@@ -21,7 +21,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate("/");
+      navigate("/feeds");
     }
   }, [isSuccess, navigate]);
 
