@@ -29,5 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'is_followed', 'date_joined',)
 
     def get_is_followed(self, obj):
-        user = self.context['request'].user
-        return user in obj.followers.all()
+        user = self.context.get('request', None)
+        if user:
+            return user in obj.followers.all()
+        return False

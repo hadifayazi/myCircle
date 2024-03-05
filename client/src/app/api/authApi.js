@@ -103,6 +103,15 @@ export const authApi = createApi({
     }),
     getProfile: builder.query({
       query: () => "user",
+      providesTags: ["user"],
+    }),
+    updateProfile: builder.mutation({
+      query: (formData) => ({
+        url: "user",
+        method: "PATCH",
+        body: formData,
+      }),
+      invalidatesTags: ["user"],
     }),
     getUser: builder.query({
       query: (username) => {
@@ -120,4 +129,5 @@ export const {
   useSignupMutation,
   useGetProfileQuery,
   useGetUserQuery,
+  useUpdateProfileMutation,
 } = authApi;
