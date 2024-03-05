@@ -1,20 +1,30 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./features/auth/Login";
 import Signup from "./features/auth/Signup";
-// import Home from "./pages/Home";
+import Home from "./pages/Home";
 import Profile from "./features/user/Profile";
-import AuthRequiredRoutes from "./components/AuthRequiredRoutes";
+import AuthRequiredRoutes from "./features/auth/AuthRequiredRoutes";
 import Feeds from "./features/user/Feeds";
+import Layout from "./components/Layout";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AuthRequiredRoutes />,
+    element: <Layout />,
     children: [
-      { path: "feeds", element: <Feeds /> },
       {
-        path: "profile",
-        element: <Profile />,
+        element: <AuthRequiredRoutes />,
+        children: [
+          { path: "feeds", element: <Feeds /> },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "home",
+            element: <Home />,
+          },
+        ],
       },
     ],
   },
