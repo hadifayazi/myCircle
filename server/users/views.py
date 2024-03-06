@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import make_password
+from django.db.models import Q
 from .serializers import UserCreateSerializer,  MyTokenObtainPairSerializer, UserSerializer
 from .models import User
 
@@ -60,3 +61,15 @@ class UserDetailsView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'username'
+
+
+class UserSearchView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        query = self.request.query_params.get('search')
+        if query:
+            return User.objects.filter(Q(username__icontains=query) | Q(name__icontains=query))
+        return User.objects.none()
