@@ -124,6 +124,9 @@ export const authApi = createApi({
     searchUsers: builder.query({
       query: (searchQuery) => `search/?search=${searchQuery}`,
     }),
+    getRecommendations: builder.query({
+      query: () => "recommendations",
+    }),
   }),
 });
 
@@ -134,4 +137,5 @@ export const {
   useGetUserQuery,
   useUpdateProfileMutation,
   useSearchUsersQuery,
+  useGetRecommendationsQuery,
 } = authApi;
