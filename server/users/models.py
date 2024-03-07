@@ -32,9 +32,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _("Users")
 
     def following_list(self):
+        """
+        all the users that the current user is following
+        """
         return self.following.all()
 
     def followers_list(self):
+        """
+        all the users who are following the current user
+        """
         return self.followers.all()
 
     def follow(self, user):
@@ -42,6 +48,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def unfollow(self, user):
         self.following.remove(user)
+
+    def get_recommendations(self, count):
+        """ 
+        Get a list(count number) of unique users who are not being followed by the current user and are not the current user themselves
+        """
+        return User.objects.exclude(followers=self).exclude(id=self.id)[:count]
 
     @property
     def get_full_name(self):

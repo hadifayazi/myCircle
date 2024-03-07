@@ -106,7 +106,7 @@ const Signup = () => {
           <div className="flex items-center justify-between ">
             <div className="text-sm ">
               You already have an account?
-              <Link to="/signup">
+              <Link to="/login">
                 <span className="hover:text-sky-500 ml-2 transition-colors ">
                   Sign in here!
                 </span>
