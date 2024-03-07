@@ -1,4 +1,4 @@
-import { IoIosNotificationsOutline } from "react-icons/io";
+import { IoIosNotificationsOutline, IoIosSearch } from "react-icons/io";
 import { BiLogOutCircle } from "react-icons/bi";
 import { BsPersonFill } from "react-icons/bs";
 import { HiOutlineEnvelope } from "react-icons/hi2";
@@ -31,6 +31,11 @@ const SideBar = () => {
           link="/contacts"
           text="Chat"
           Icon={<HiOutlineEnvelope size={28} />}
+        />
+        <SidebarItem
+          link="/search"
+          text="Search"
+          Icon={<IoIosSearch size={28} />}
         />
         <SidebarItem
           link="/notif"
