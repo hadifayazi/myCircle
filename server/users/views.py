@@ -73,3 +73,12 @@ class UserSearchView(generics.ListAPIView):
         if query:
             return User.objects.filter(Q(username__icontains=query) | Q(name__icontains=query))
         return User.objects.none()
+
+
+class UserRecommendationsView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.get_recommendations(count=10)
