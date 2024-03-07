@@ -6,6 +6,7 @@ import Profile from "./features/user/Profile";
 import AuthRequiredRoutes from "./features/auth/AuthRequiredRoutes";
 import Feeds from "./features/user/Feeds";
 import Layout from "./components/Layout";
+import Search from "./components/Search";
 
 const router = createBrowserRouter([
   {
@@ -19,10 +20,15 @@ const router = createBrowserRouter([
           {
             path: "profile",
             element: <Profile />,
+            children: [{ path: "user/:username", element: <Profile /> }],
           },
           {
             path: "home",
             element: <Home />,
+          },
+          {
+            path: "search",
+            element: <Search />,
           },
         ],
       },

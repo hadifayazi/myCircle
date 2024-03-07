@@ -1,30 +1,58 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { IoMdCalendar } from "react-icons/io";
-import { useGetProfileQuery } from "../../app/api/authApi";
+import { useGetProfileQuery, useGetUserQuery } from "../../app/api/authApi";
 import Spiner from "../../components/Spiner";
 import { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
+import { getLocalUsername } from "../../app/services/tokenDecode";
 
 const Profile = () => {
+  const { username: profileUsername } = useParams();
+  const loggedInUsername = getLocalUsername(
+    localStorage.getItem("accessToken")
+  );
+  const isNotEmptyObject = (obj) => {
+    return obj && Object.keys(obj).length !== 0;
+  };
+
   const [isEdit, setIsEdit] = useState(false);
   const [user, setUser] = useState(null);
+
   const { data: userData, isLoading, isError } = useGetProfileQuery();
 
+  // Only make the API call when there are params
+  const {
+    data: retrivedUserData,
+    isLoading: isLoadingRetrivrdUser,
+    isError: isErrorRetrivedUser,
+    error: errorRetrivedUser,
+  } = useGetUserQuery(isNotEmptyObject(profileUsername) ? profileUsername : "");
+
   useEffect(() => {
-    if (userData) {
+    if (isNotEmptyObject(profileUsername)) {
+      if (retrivedUserData) {
+        setUser(retrivedUserData);
+      }
+    } else if (userData) {
       setUser(userData);
     }
-  }, [userData]);
+  }, [userData, retrivedUserData, profileUsername]);
 
-  if (isLoading) return <Spiner />;
+  if (isLoading || isLoadingRetrivrdUser) return <Spiner />;
   if (isError) return <div>Error</div>;
+  if (isNotEmptyObject(profileUsername) && isErrorRetrivedUser)
+    return <div>{errorRetrivedUser}</div>;
 
-  console.log(user);
+  const isOwnProfile =
+    loggedInUsername &&
+    loggedInUsername.toLowerCase() === user?.username?.toLowerCase();
 
   return (
     <>
-      {isEdit && <EditProfile user={user} close={() => setIsEdit(false)} />}
+      {isEdit && isOwnProfile && (
+        <EditProfile user={user} close={() => setIsEdit(false)} />
+      )}
 
       {user && (
         <>
@@ -60,12 +88,14 @@ const Profile = () => {
             />
 
             <div>
-              <button
-                onClick={() => setIsEdit(true)}
-                className="bg-sky-500 mr-7 text-white font-semibold rounded-full px-7 py-3 mt-3 ml-3 hover:bg-sky-600 transition"
-              >
-                Edit
-              </button>
+              {isOwnProfile && (
+                <button
+                  onClick={() => setIsEdit(true)}
+                  className="bg-sky-500 mr-7 text-white font-semibold rounded-full px-7 py-3 mt-3 ml-3 hover:bg-sky-600 transition"
+                >
+                  Edit
+                </button>
+              )}
             </div>
           </div>
 
@@ -88,7 +118,6 @@ const Profile = () => {
               <span className="text-white">{user.following}</span> Following
             </div>
             <div className="flex gap-3 w-full p-2 text-neutral-500">
-              {/* <IoMdCalendar className="mt-1 mb-3" size={20} /> */}
               {user.bio}
             </div>
           </div>
