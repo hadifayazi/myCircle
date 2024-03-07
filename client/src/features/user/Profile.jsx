@@ -114,8 +114,10 @@ const Profile = () => {
             </div>
 
             <div className="flex gap-3 w-full p-2 text-neutral-500">
-              <span className="text-white">{user.followers}</span> Followers{" "}
-              <span className="text-white">{user.following}</span> Following
+              <span className="text-white">{user.followers.length}</span>{" "}
+              Followers
+              <span className="text-white">{user.following.length}</span>{" "}
+              Following
             </div>
             <div className="flex gap-3 w-full p-2 text-neutral-500">
               {user.bio}
