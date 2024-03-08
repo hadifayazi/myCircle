@@ -3,6 +3,7 @@ import { IoIosSearch } from "react-icons/io";
 import { useSearchUsersQuery } from "../app/api/authApi";
 import SearchResultItem from "./SearchResultItem";
 import { Link } from "react-router-dom";
+import Recommendation from "./Recommendation";
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,6 +47,10 @@ const Search = () => {
           )}
         </div>
       )}
+      <>
+        <h4>Maybe you want to follow?</h4>
+        <Recommendation />
+      </>
     </div>
   );
 };
