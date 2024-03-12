@@ -8,9 +8,12 @@ import {
   setLoginError,
 } from "../../features/auth/authSlice";
 
+const baseurl = "http://127.0.0.1:8000/api/v1/users/";
+
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: baseQueryReauthorized,
+  baseQuery: (args, api, extraOptions) =>
+    baseQueryReauthorized(args, api, extraOptions, baseurl),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (userData) => ({

@@ -1,19 +1,27 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout, setToken } from "../../features/auth/authSlice";
 
-const baseQuery = fetchBaseQuery({
-  baseUrl: "http://127.0.0.1:8000/api/v1/users/",
-  credentials: "include",
-  prepareHeaders: (headers) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      headers.append("Authorization", `Bearer ${token}`);
-    }
-    return headers;
-  },
-});
+const CreateBaseQuery = (baseurl) =>
+  fetchBaseQuery({
+    baseUrl: baseurl,
+    credentials: "include",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        headers.append("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  });
 
-export const baseQueryReauthorized = async (args, api, extraOptions) => {
+export const baseQueryReauthorized = async (
+  args,
+  api,
+  extraOptions,
+  baseUrl
+) => {
+  const baseQuery = CreateBaseQuery(baseUrl);
+
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 401) {
     const refreshTokenResponse = await baseQuery(
