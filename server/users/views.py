@@ -62,6 +62,11 @@ class UserDetailsView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'username'
 
+    def retrieve(self, request, *args, **kwargs):
+        user_instance = self.get_object()
+        serializer = self.get_serializer(user_instance)
+        return Response(serializer.data)
+
 
 class UserSearchView(generics.ListAPIView):
     queryset = User.objects.all()
@@ -82,3 +87,25 @@ class UserRecommendationsView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return user.get_recommendations(count=10)
+
+
+@api_view(["POST"])
+@permission_classes([permissions.IsAuthenticated,])
+def follow(request):
+    logedin_user = request.user
+    username = request.data.get('username')
+
+    if username and username != logedin_user.username:
+        try:
+            user_to_follow = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if logedin_user.following.filter(username=username).exists():
+            logedin_user.unfollow(user_to_follow)
+            return Response({'detail': f"You have Unfollowed {user_to_follow}"}, status=status.HTTP_200_OK)
+
+        logedin_user.follow(user_to_follow)
+        return Response({'detail': f"You have followed {user_to_follow}"}, status=status.HTTP_200_OK)
+
+    return Response(status=status.HTTP_400_BAD_REQUEST)
