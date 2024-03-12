@@ -123,9 +123,18 @@ export const authApi = createApi({
     }),
     searchUsers: builder.query({
       query: (searchQuery) => `search/?search=${searchQuery}`,
+      invalidatesTags: ["user"],
     }),
     getRecommendations: builder.query({
       query: () => "recommendations",
+    }),
+    follow: builder.mutation({
+      query: (username) => ({
+        url: `follow`,
+        method: "POST",
+        body: { username },
+      }),
+      invalidatesTags: ["user"],
     }),
   }),
 });
@@ -138,4 +147,5 @@ export const {
   useUpdateProfileMutation,
   useSearchUsersQuery,
   useGetRecommendationsQuery,
+  useFollowMutation,
 } = authApi;
