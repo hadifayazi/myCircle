@@ -15,7 +15,7 @@ class Post(models.Model):
         return self.content
 
     class Meta:
-        ordering = _('created_at',)
+        ordering = ['created_at']
 
 
 class Comment(models.Model):
@@ -28,4 +28,4 @@ class Comment(models.Model):
         return self.content
 
     class Meta:
-        ordering = _('created_at',)
+        ordering = ['created_at']
