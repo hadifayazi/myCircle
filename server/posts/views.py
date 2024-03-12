@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from backend.pagination import CustomPagination
 
 
-class PostView(generics.ListCreateAPIView):
+class PostListCreateView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -14,3 +14,10 @@ class PostView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+    lookup_field = 'pk'
