@@ -4,9 +4,10 @@ import Signup from "./features/auth/Signup";
 import Home from "./pages/Home";
 import Profile from "./features/user/Profile";
 import AuthRequiredRoutes from "./features/auth/AuthRequiredRoutes";
-import Feeds from "./features/user/Feeds";
+import Feed from "./features/posts/Feed";
 import Layout from "./components/Layout";
 import Search from "./components/Search";
+import AddPost from "./features/posts/AddPost";
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,11 @@ const router = createBrowserRouter([
       {
         element: <AuthRequiredRoutes />,
         children: [
-          { path: "feeds", element: <Feeds /> },
+          { path: "feed", element: <Feed /> },
+          {
+            path: "new-post",
+            element: <AddPost />,
+          },
           {
             path: "profile",
             element: <Profile />,
