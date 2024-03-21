@@ -5,13 +5,13 @@ import { useGetProfileQuery, useGetUserQuery } from "../../app/api/authApi";
 import Spiner from "../../components/Spiner";
 import { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
-import { getLocalUsername } from "../../app/services/tokenDecode";
+import { getLocalUserInfo } from "../../app/services/tokenDecode";
 
 const Profile = () => {
   const { username: profileUsername } = useParams();
-  const loggedInUsername = getLocalUsername(
+  const loggedInUsername = getLocalUserInfo(
     localStorage.getItem("accessToken")
-  );
+  ).username;
   const isNotEmptyObject = (obj) => {
     return obj && Object.keys(obj).length !== 0;
   };
